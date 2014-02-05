@@ -153,6 +153,7 @@ pub mod any;
 pub mod option;
 pub mod result;
 pub mod hashmap;
+pub mod hashmap_ng;
 pub mod cell;
 pub mod trie;
 
