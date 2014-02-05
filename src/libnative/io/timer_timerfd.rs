@@ -33,7 +33,7 @@ use std::libc;
 use std::ptr;
 use std::os;
 use std::rt::rtio;
-use std::hashmap::HashMap;
+use std::hashmap_ng::HashMap;
 use std::unstable::intrinsics;
 
 use io::file::FileDesc;

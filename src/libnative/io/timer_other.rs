@@ -47,7 +47,7 @@
 //! Note that all time units in this file are in *milliseconds*.
 
 use std::comm::Data;
-use std::hashmap::HashMap;
+use std::hashmap_ng::HashMap;
 use std::libc;
 use std::os;
 use std::ptr;
