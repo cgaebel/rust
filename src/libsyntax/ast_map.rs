@@ -201,7 +201,7 @@ pub struct Map {
     /// super-compact by storing them in a vector. Not everything with
     /// a NodeId is in the map, but empirically the occupancy is about
     /// 75-80%, so there's not too much overhead (certainly less than
-    /// a hashmap, since they (at the time of writing) have a maximum
+    /// a hashmap_ng, since they (at the time of writing) have a maximum
     /// of 75% occupancy). (The additional overhead of the Option<>
     /// inside the SmallIntMap could be removed by adding an extra
     /// empty variant to Node and storing a vector here, but that was

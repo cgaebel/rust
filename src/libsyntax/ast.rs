@@ -18,7 +18,7 @@ use parse::token::{InternedString, special_idents, str_to_ident};
 use parse::token;
 
 use std::cell::RefCell;
-use std::hashmap::HashMap;
+use std::hashmap_ng::HashMap;
 use std::option::Option;
 use std::rc::Rc;
 use std::to_str::ToStr;

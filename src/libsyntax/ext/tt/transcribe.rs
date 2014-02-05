@@ -18,7 +18,7 @@ use parse::token;
 use parse::lexer::TokenAndSpan;
 
 use std::cell::{Cell, RefCell};
-use std::hashmap::HashMap;
+use std::hashmap_ng::HashMap;
 use std::option;
 
 ///an unzipping of `TokenTree`s

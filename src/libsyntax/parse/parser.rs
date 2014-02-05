@@ -80,7 +80,7 @@ use opt_vec;
 use opt_vec::OptVec;
 
 use std::cell::Cell;
-use std::hashmap::HashSet;
+use std::hashmap_ng::HashSet;
 use std::kinds::marker;
 use std::util;
 use std::vec;

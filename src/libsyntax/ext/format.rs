@@ -19,7 +19,7 @@ use parse::token::InternedString;
 use parse::token;
 use rsparse = parse;
 use std::fmt::parse;
-use std::hashmap::{HashMap, HashSet};
+use std::hashmap_ng::{HashMap, HashSet};
 use std::vec;
 
 #[deriving(Eq)]

@@ -19,7 +19,7 @@ use parse::token;
 use parse::token::{InternedString, intern, str_to_ident};
 use util::small_vector::SmallVector;
 
-use std::hashmap::HashMap;
+use std::hashmap_ng::HashMap;
 use std::unstable::dynamic_lib::DynamicLibrary;
 
 // new-style macro! tt code:

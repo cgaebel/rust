@@ -18,7 +18,7 @@ use visit::Visitor;
 use visit;
 
 use std::cell::{Cell, RefCell};
-use std::hashmap::HashMap;
+use std::hashmap_ng::HashMap;
 use std::u32;
 use std::local_data;
 use std::num;
@@ -947,7 +947,7 @@ mod test {
     use ast::*;
     use super::*;
     use opt_vec;
-    use std::hashmap::HashMap;
+    use std::hashmap_ng::HashMap;
 
     fn ident_to_segment(id : &Ident) -> PathSegment {
         PathSegment {identifier:id.clone(),

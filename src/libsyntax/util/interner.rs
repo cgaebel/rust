@@ -17,7 +17,7 @@ use ast::Name;
 use std::cast;
 use std::cell::RefCell;
 use std::cmp::Equiv;
-use std::hashmap::HashMap;
+use std::hashmap_ng::HashMap;
 use std::rc::Rc;
 
 pub struct Interner<T> {
