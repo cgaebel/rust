@@ -800,7 +800,7 @@ mod test {
 
     #[test]
     fn test_iterbytes_impl_for_uuid() {
-        use std::hashmap::HashSet;
+        use std::hashmap_ng::HashSet;
         let mut set = HashSet::new();
         let id1 = Uuid::new_v4();
         let id2 = Uuid::new_v4();
