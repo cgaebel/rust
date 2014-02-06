@@ -468,6 +468,10 @@ impl <K: Hash + Eq, V> MutableMap<K, V> for HashMap<K, V> {
     }
 
     fn pop(&mut self, k: &K) -> Option<V> {
+        if self.size == 0 {
+            return None
+        }
+
         self.make_some_room(self.size - 1);
 
         let starting_index =
@@ -614,6 +618,7 @@ impl<K: Hash + Eq, V> HashMap<K, V> {
     ///      for the load factor.
     ///   2) Ensure new_capacity is a power of two.
     fn resize(&mut self, new_capacity: uint) {
+        let old_size = self.size;
 
         self.hash_mask   = build_hashmask_from_pow2(new_capacity);
         self.grow_at     = grow_at(new_capacity, self.load_factor);
@@ -629,16 +634,22 @@ impl<K: Hash + Eq, V> HashMap<K, V> {
         let mut old_vals = util::replace(&mut self.vals,
                                          make_uninitialized_vec(new_capacity));
 
+        let mut num_copied = 0u;
+
         for i in range(0, cap) {
             let h = *get_vec_ref(&old_hashes, i);
-            if h == EMPTY_BUCKET { continue }
 
+            if h == EMPTY_BUCKET { continue }
 
             let k = take_vec_elem(&mut old_keys, i);
             let v = take_vec_elem(&mut old_vals, i);
 
             self.manual_insert_hashed_nocheck(h, k, v);
+
+            num_copied += 1;
         }
+
+        assert_eq!(old_size, num_copied);
 
         // Don't let the destructor run on any of the 'undefined' elements left
         // in the vector.
@@ -1649,6 +1660,12 @@ mod test_map {
         println!("Done destructing. Everything should be cleaned up by now.");
     }
 */
+
+    #[test]
+    fn test_empty_pop() {
+        let mut m: HashMap<int, bool> = HashMap::new();
+        assert_eq!(m.pop(&0), None);
+    }
 
     #[test]
     fn test_lots_of_insertions() {
