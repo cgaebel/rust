@@ -13,7 +13,7 @@
 #[allow(unused_must_use)]; // as with encoding, everything is a no-fail MemWriter
 
 use std::cell::RefCell;
-use std::hashmap::HashMap;
+use std::hashmap_ng::HashMap;
 use std::io;
 use std::io::MemWriter;
 use std::str;

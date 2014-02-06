@@ -19,7 +19,7 @@ use metadata::loader;
 use metadata::loader::Os;
 
 use std::cell::RefCell;
-use std::hashmap::HashMap;
+use std::hashmap_ng::HashMap;
 use syntax::ast;
 use syntax::abi;
 use syntax::attr;

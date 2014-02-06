@@ -16,7 +16,7 @@ use metadata::decoder;
 use metadata::loader;
 
 use std::cell::RefCell;
-use std::hashmap::HashMap;
+use std::hashmap_ng::HashMap;
 use syntax::ast;
 use syntax::parse::token::IdentInterner;
 

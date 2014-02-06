@@ -12,7 +12,7 @@ use std::cell::RefCell;
 use std::option;
 use std::os;
 use std::io::fs;
-use std::hashmap::HashSet;
+use std::hashmap_ng::HashSet;
 
 pub enum FileMatch { FileMatches, FileDoesntMatch }
 

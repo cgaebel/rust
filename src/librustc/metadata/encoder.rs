@@ -25,7 +25,7 @@ use middle;
 use serialize::Encodable;
 use std::cast;
 use std::cell::{Cell, RefCell};
-use std::hashmap::{HashMap, HashSet};
+use std::hashmap_ng::{HashMap, HashSet};
 use std::io::MemWriter;
 use std::str;
 use std::vec;
