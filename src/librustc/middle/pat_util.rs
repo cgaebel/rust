@@ -11,7 +11,7 @@
 
 use middle::resolve;
 
-use std::hashmap::HashMap;
+use std::hashmap_ng::*;
 use syntax::ast::*;
 use syntax::ast_util::{path_to_ident, walk_pat};
 use syntax::codemap::Span;
