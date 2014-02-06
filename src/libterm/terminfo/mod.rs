@@ -10,7 +10,7 @@
 
 #[allow(missing_doc)];
 
-use std::hashmap::HashMap;
+use std::hashmap_ng::HashMap;
 
 /// A parsed terminfo entry.
 pub struct TermInfo {

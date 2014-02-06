@@ -14,7 +14,7 @@
 
 
 use std::{vec, str};
-use std::hashmap::HashMap;
+use std::hashmap_ng::HashMap;
 use std::io;
 use super::super::TermInfo;
 
