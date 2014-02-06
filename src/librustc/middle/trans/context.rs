@@ -30,6 +30,7 @@ use util::sha2::Sha256;
 use std::cell::{Cell, RefCell};
 use std::c_str::ToCStr;
 use std::hashmap::{HashMap, HashSet};
+use std::hashmap_ng;
 use std::local_data;
 use std::libc::c_uint;
 use syntax::ast;
@@ -46,8 +47,8 @@ pub struct CrateContext {
      intrinsics: HashMap<&'static str, ValueRef>,
      item_vals: RefCell<HashMap<ast::NodeId, ValueRef>>,
      exp_map2: resolve::ExportMap2,
-     reachable: @RefCell<HashSet<ast::NodeId>>,
-     item_symbols: RefCell<HashMap<ast::NodeId, ~str>>,
+     reachable: @RefCell<hashmap_ng::HashSet<ast::NodeId>>,
+     item_symbols: RefCell<hashmap_ng::HashMap<ast::NodeId, ~str>>,
      link_meta: LinkMeta,
      tydescs: RefCell<HashMap<ty::t, @tydesc_info>>,
      // Set when running emit_tydescs to enforce that no more tydescs are
@@ -61,7 +62,7 @@ pub struct CrateContext {
      // A set of static items which cannot be inlined into other crates. This
      // will pevent in IIItem() structures from being encoded into the metadata
      // that is generated
-     non_inlineable_statics: RefCell<HashSet<ast::NodeId>>,
+     non_inlineable_statics: RefCell<hashmap_ng::HashSet<ast::NodeId>>,
      // Cache instances of monomorphized functions
      monomorphized: RefCell<HashMap<mono_id, ValueRef>>,
      monomorphizing: RefCell<HashMap<ast::DefId, uint>>,
@@ -123,7 +124,7 @@ impl CrateContext {
                maps: astencode::Maps,
                symbol_hasher: Sha256,
                link_meta: LinkMeta,
-               reachable: @RefCell<HashSet<ast::NodeId>>)
+               reachable: @RefCell<hashmap_ng::HashSet<ast::NodeId>>)
                -> CrateContext {
         unsafe {
             let llcx = llvm::LLVMContextCreate();
@@ -186,13 +187,13 @@ impl CrateContext {
                   item_vals: RefCell::new(HashMap::new()),
                   exp_map2: emap2,
                   reachable: reachable,
-                  item_symbols: RefCell::new(HashMap::new()),
+                  item_symbols: RefCell::new(hashmap_ng::HashMap::new()),
                   link_meta: link_meta,
                   tydescs: RefCell::new(HashMap::new()),
                   finished_tydescs: Cell::new(false),
                   external: RefCell::new(HashMap::new()),
                   external_srcs: RefCell::new(HashMap::new()),
-                  non_inlineable_statics: RefCell::new(HashSet::new()),
+                  non_inlineable_statics: RefCell::new(hashmap_ng::HashSet::new()),
                   monomorphized: RefCell::new(HashMap::new()),
                   monomorphizing: RefCell::new(HashMap::new()),
                   vtables: RefCell::new(HashMap::new()),

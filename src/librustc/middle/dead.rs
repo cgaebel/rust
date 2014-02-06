@@ -18,6 +18,7 @@ use middle::ty;
 use middle::typeck;
 
 use std::hashmap::HashSet;
+use std::hashmap_ng;
 use syntax::ast;
 use syntax::ast_map;
 use syntax::ast_util::{local_def, def_id_of_def, is_local};
@@ -253,7 +254,7 @@ impl Visitor<()> for LifeSeeder {
 
 fn create_and_seed_worklist(tcx: ty::ctxt,
                             exported_items: &privacy::ExportedItems,
-                            reachable_symbols: &HashSet<ast::NodeId>,
+                            reachable_symbols: &hashmap_ng::HashSet<ast::NodeId>,
                             crate: &ast::Crate) -> ~[ast::NodeId] {
     let mut worklist = ~[];
 
@@ -287,7 +288,7 @@ fn create_and_seed_worklist(tcx: ty::ctxt,
 fn find_live(tcx: ty::ctxt,
              method_map: typeck::method_map,
              exported_items: &privacy::ExportedItems,
-             reachable_symbols: &HashSet<ast::NodeId>,
+             reachable_symbols: &hashmap_ng::HashSet<ast::NodeId>,
              crate: &ast::Crate)
              -> ~HashSet<ast::NodeId> {
     let worklist = create_and_seed_worklist(tcx, exported_items,
@@ -411,7 +412,7 @@ impl Visitor<()> for DeadVisitor {
 pub fn check_crate(tcx: ty::ctxt,
                    method_map: typeck::method_map,
                    exported_items: &privacy::ExportedItems,
-                   reachable_symbols: &HashSet<ast::NodeId>,
+                   reachable_symbols: &hashmap_ng::HashSet<ast::NodeId>,
                    crate: &ast::Crate) {
     let live_symbols = find_live(tcx, method_map, exported_items,
                                  reachable_symbols, crate);
