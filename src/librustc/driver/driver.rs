@@ -28,8 +28,7 @@ use util::common::time;
 use util::ppaux;
 
 use std::cell::{Cell, RefCell};
-use std::hashmap::{HashMap,HashSet};
-use std::hashmap_ng;
+use std::hashmap_ng::{HashMap,HashSet};
 use std::io;
 use std::io::fs;
 use std::io::MemReader;
@@ -232,7 +231,7 @@ pub struct CrateAnalysis {
     public_items: middle::privacy::PublicItems,
     ty_cx: ty::ctxt,
     maps: astencode::Maps,
-    reachable: @RefCell<hashmap_ng::HashSet<ast::NodeId>>
+    reachable: @RefCell<HashSet<ast::NodeId>>
 }
 
 /// Run the resolution, typechecking, region checking and other

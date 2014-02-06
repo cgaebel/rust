@@ -29,8 +29,7 @@ use syntax::parse::token;
 use syntax;
 
 use std::cell::{Cell, RefCell};
-use std::hashmap::{HashMap,HashSet};
-use std::hashmap_ng;
+use std::hashmap_ng::{HashMap,HashSet};
 
 pub struct Config {
     os: abi::Os,
@@ -154,7 +153,7 @@ pub struct Options {
     // This was mutable for rustpkg, which updates search paths based on the
     // parsed code. It remains mutable in case its replacements wants to use
     // this.
-    addl_lib_search_paths: @RefCell<hashmap_ng::HashSet<Path>>,
+    addl_lib_search_paths: @RefCell<HashSet<Path>>,
     ar: Option<~str>,
     linker: Option<~str>,
     linker_args: ~[~str],
@@ -385,7 +384,7 @@ pub fn basic_options() -> @Options {
         lint_opts: ~[],
         save_temps: false,
         output_type: link::OutputTypeExe,
-        addl_lib_search_paths: @RefCell::new(hashmap_ng::HashSet::new()),
+        addl_lib_search_paths: @RefCell::new(HashSet::new()),
         ar: None,
         linker: None,
         linker_args: ~[],
