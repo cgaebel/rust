@@ -206,20 +206,6 @@ fn build_hashmask_from_pow2(capacity: uint) -> u64 {
     return res as u64
 }
 
-/// Build a hash_mask from an arbitrary uint. This is more
-/// expensive than build_hashmask_from_pow2, but more general.
-fn build_hashmask_from_uint(value: uint) -> u64 {
-    build_hashmask_from_pow2(num::next_power_of_two(value))
-}
-
-#[test]
-fn sane_hashmask() {
-    assert_eq!(build_hashmask_from_uint(14), 0xFu64);
-    assert_eq!(build_hashmask_from_pow2(16), 0xFu64);
-    assert_eq!(build_hashmask_from_uint(16), 0xFu64);
-    assert_eq!(build_hashmask_from_uint(1 << 5), 31u64);
-}
-
 /// Turns a hash into an index into the underlying arrays.
 /// This exploits the power-of-two size of the hashtable with the
 /// hash_mask member to prevent a costly division.
@@ -329,7 +315,7 @@ impl<K: Hash + Eq, V> HashMap<K, V> {
     }
 
     #[inline]
-    fn get_hash<'a>(&'a self, idx: uint) -> u64 {
+    fn get_hash(&self, idx: uint) -> u64 {
         *get_vec_ref(&self.hashes, idx)
     }
 
@@ -450,6 +436,11 @@ impl <K: Hash + Eq, V> Map<K, V> for HashMap<K, V> {
     fn find<'a>(&'a self, k: &K) -> Option<&'a V> {
         self.search(k).map(|idx| self.get_val_ref(idx))
     }
+
+    #[inline]
+    fn contains_key(&self, k: &K) -> bool {
+        self.search(k).is_some()
+    }
 }
 
 impl <K: Hash + Eq, V> MutableMap<K, V> for HashMap<K, V> {
@@ -539,7 +530,8 @@ impl <K: Hash + Eq, V> MutableMap<K, V> for HashMap<K, V> {
             probe = probe_next(probe, self.hash_mask);
         }
 
-        // should really never happen.
+        assert!(!self.contains_key(k));
+
         return None;
     }
 }
@@ -566,13 +558,13 @@ impl<K: Hash + Eq, V> HashMap<K, V> {
     /// cause many collisions and very poor performance. Setting them
     /// manually using this function can expose a DoS attack vector.
     pub fn with_capacity_and_keys(k0: u64, k1: u64, capacity: uint) -> HashMap<K, V> {
-        let cap = num::max(INITIAL_CAPACITY, capacity);
+        let cap = num::next_power_of_two(num::max(INITIAL_CAPACITY, capacity));
 
         HashMap {
             k0:               k0,
             k1:               k1,
             load_factor:      INITIAL_LOAD_FACTOR,
-            hash_mask:        build_hashmask_from_uint(cap),
+            hash_mask:        build_hashmask_from_pow2(cap),
             grow_at:          grow_at(cap, INITIAL_LOAD_FACTOR),
             shrink_at:        shrink_at(cap),
             minimum_capacity: cap,
@@ -591,13 +583,14 @@ impl<K: Hash + Eq, V> HashMap<K, V> {
     /// hashtable, only on performance.
     #[inline]
     pub fn reserve_at_least(&mut self, new_minimum_capacity: uint) {
-        let cap = num::max(INITIAL_CAPACITY, new_minimum_capacity);
-
-        if self.capacity() < cap {
-            self.resize(num::next_power_of_two(cap));
-        }
+        let cap = num::next_power_of_two(
+            num::max(INITIAL_CAPACITY, new_minimum_capacity));
 
         self.minimum_capacity = cap;
+
+        if self.capacity() < cap {
+            self.resize(cap);
+        }
     }
 
     // FIXME(cgaebel): Allow the load factor to be changed dynamically,
@@ -650,6 +643,7 @@ impl<K: Hash + Eq, V> HashMap<K, V> {
         }
 
         assert_eq!(old_size, num_copied);
+        assert_eq!(self.size, old_size);
 
         // Don't let the destructor run on any of the 'undefined' elements left
         // in the vector.
@@ -714,7 +708,56 @@ impl<K: Hash + Eq, V> HashMap<K, V> {
         self.insert_hashed_from(
             old_hash, old_key, old_val,
             probe_next(probe, self.hash_mask),
-            probe_dib + 1, num_probes);
+            probe_dib + 1, num_probes + 1);
+    }
+
+    // MUST NOT be used on elements that already exist in the table.
+    // Also assumes that there's enough room in the table to do the
+    // insertion.
+    // This function is responsible for the robin hood bucket stealing.
+    //
+    // FIXME: The way this function is structured is kind of ugly.
+    fn insert_hashed_from(
+        &mut self,
+        hash: u64,
+        k: K,
+        v: V,
+        start_bucket: uint,
+        dib_param: uint,
+        iters_so_far: uint) {
+
+        let mut probe = start_bucket;
+        let mut dib   = dib_param;
+
+        for num_probes in range_inclusive(iters_so_far, self.size) {
+            let bucket_hash = self.get_hash(probe);
+
+            if bucket_hash == EMPTY_BUCKET {
+                // Finally. A hole!
+                self.put_at(probe, hash, k, v);
+                return;
+            }
+
+            let probe_dib = self.bucket_distance(probe);
+
+            if probe_dib < dib {
+                // Robin hood. Steal the spot.
+                let old_hash = self.get_hash(probe);
+                self.set_hash(probe, hash);
+
+                let old_key  = util::replace(self.get_key_mut_ref(probe), k);
+                let old_val  = util::replace(self.get_val_mut_ref(probe), v);
+
+                // This had better be tail-call.
+                return self.insert_hashed_from(
+                    old_hash, old_key, old_val,
+                    probe_next(probe, self.hash_mask),
+                    probe_dib + 1, num_probes + 1);
+            }
+
+            dib += 1;
+            probe = probe_next(probe, self.hash_mask);
+        }
     }
 
     /// Manually insert a pre-hashed key-value pair, without first checking
@@ -813,55 +856,6 @@ impl<K: Hash + Eq, V> HashMap<K, V> {
         fail!("Internal HashMap error: Out of space.");
     }
 
-    // MUST NOT be used on elements that already exist in the table.
-    // Also assumes that there's enough room in the table to do the
-    // insertion.
-    // This function is responsible for the robin hood bucket stealing.
-    //
-    // FIXME: The way this function is structured is kind of ugly.
-    fn insert_hashed_from(
-        &mut self,
-        hash: u64,
-        k: K,
-        v: V,
-        start_bucket: uint,
-        dib_param: uint,
-        iters_so_far: uint) {
-
-        let mut probe = start_bucket;
-        let mut dib   = dib_param;
-
-        for num_probes in range_inclusive(iters_so_far, self.size) {
-            let bucket_hash = self.get_hash(probe);
-
-            if bucket_hash == EMPTY_BUCKET {
-                // Finally. A hole!
-                self.put_at(probe, hash, k, v);
-                return;
-            }
-
-            let probe_dib = self.bucket_distance(probe);
-
-            if probe_dib < dib {
-                // Robin hood. Steal the spot.
-                let old_hash = self.get_hash(probe);
-                self.set_hash(probe, hash);
-
-                let old_key  = util::replace(self.get_key_mut_ref(probe), k);
-                let old_val  = util::replace(self.get_val_mut_ref(probe), v);
-
-                // This had better be tail-call.
-                return self.insert_hashed_from(
-                    old_hash, old_key, old_val,
-                    probe_next(probe, self.hash_mask),
-                    probe_dib + 1, num_probes + 1);
-            }
-
-            dib += 1;
-            probe = probe_next(probe, self.hash_mask);
-        }
-    }
-
     /// Return the value corresponding to the key in the map, or insert
     /// and return the value if it doesn't exist.
     #[inline]
@@ -939,7 +933,7 @@ impl<K: Hash + Eq, V> HashMap<K, V> {
     /// using equivalence.
     #[inline]
     pub fn contains_key_equiv<Q:Hash + Equiv<K>>(&self, key: &Q) -> bool {
-        self.find_equiv(key).is_some()
+        self.search_equiv(key).is_some()
     }
 
     /// Return the value corresponding to the key in the map, using
@@ -1076,7 +1070,12 @@ impl<K: Hash + Eq, V: Eq> Eq for HashMap<K, V> {
 
 impl<K: Hash + Eq + Clone, V: Clone> Clone for HashMap<K, V> {
     fn clone(&self) -> HashMap<K, V> {
-        let mut new_map = HashMap::with_capacity(self.capacity());
+        // We must be very careful here to use the same keys. If we didn't
+        // do that, everything would need to be rehashed. That can be
+        // quite slow, so let's just use the hashes we already have lying
+        // around.
+        let mut new_map =
+            HashMap::with_capacity_and_keys(self.k0, self.k1, self.capacity());
 
         for i in range(0, self.capacity()) {
             let hash = self.get_hash(i);
@@ -1131,7 +1130,6 @@ impl<K: Eq + Hash, V> Default for HashMap<K, V> {
 }
 
 /// HashMap iterator
-#[deriving(Clone)]
 pub struct Entries<'a, K, V> {
     priv hashes:    &'a vec_ng::Vec<u64>,
     priv keys:      &'a vec_ng::Vec<K>,
@@ -1290,9 +1288,8 @@ impl <K, V> Drop for MoveEntries<K, V> {
 }
 
 /// HashSet iterator
-#[deriving(Clone)]
 pub struct SetItems<'a, K> {
-    priv iter: Entries<'a, K, ()>,
+    priv iter: Keys<'a, K, ()>,
 }
 
 /// HashSet move iterator
@@ -1303,10 +1300,7 @@ pub struct SetMoveItems<K> {
 impl<'a, K: Hash + Eq> Iterator<&'a K> for SetItems<'a, K> {
     #[inline]
     fn next(&mut self) -> Option<&'a K> {
-        match self.iter.next() {
-            Some((k, _)) => Some(k),
-            None         => None
-        }
+        self.iter.next()
     }
 
     #[inline]
@@ -1368,9 +1362,9 @@ impl<T:Hash + Eq> Eq for HashSet<T> {
     // but can't due to #11998.
     #[inline]
     fn eq(&self, other: &HashSet<T>) -> bool {
-        if self.map.len() != other.map.len() { return false }
+        if self.len() != other.len() { return false }
         
-        self.map.iter().all(|(k, _)| {
+        self.map.keys().all(|k| {
             other.map.search(k).is_some()
         })
     }
@@ -1470,7 +1464,7 @@ impl<T: Hash + Eq> HashSet<T> {
     /// Returns true if the hash set contains a value equivalent to the
     /// given query value.
     #[inline]
-    pub fn contains_equiv<Q:Hash + Equiv<T>>(&self, value: &Q) -> bool {
+    pub fn contains_equiv<Q: Hash + Equiv<T>>(&self, value: &Q) -> bool {
       self.map.contains_key_equiv(value)
     }
 
@@ -1478,7 +1472,7 @@ impl<T: Hash + Eq> HashSet<T> {
     /// Iterator element type is &'a T.
     #[inline]
     pub fn iter<'a>(&'a self) -> SetItems<'a, T> {
-        SetItems { iter: self.map.iter() }
+        SetItems { iter: self.map.keys() }
     }
 
     /// Creates a consuming iterator, that is, one that moves each value out

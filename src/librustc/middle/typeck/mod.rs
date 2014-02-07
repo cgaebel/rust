@@ -69,7 +69,8 @@ use util::ppaux::Repr;
 use util::ppaux;
 
 use std::cell::RefCell;
-use std::hashmap::HashMap;
+use std::hashmap;
+use std::hashmap_ng;
 use std::rc::Rc;
 use std::result;
 use extra::list::List;
@@ -151,7 +152,7 @@ pub struct method_map_entry {
 
 // maps from an expression id that corresponds to a method call to the details
 // of the method to be invoked
-pub type method_map = @RefCell<HashMap<ast::NodeId, method_map_entry>>;
+pub type method_map = @RefCell<hashmap_ng::HashMap<ast::NodeId, method_map_entry>>;
 
 pub type vtable_param_res = @~[vtable_origin];
 // Resolutions for bounds of all parameters, left to right, for a given path.
@@ -195,7 +196,7 @@ impl Repr for vtable_origin {
     }
 }
 
-pub type vtable_map = @RefCell<HashMap<ast::NodeId, vtable_res>>;
+pub type vtable_map = @RefCell<hashmap_ng::HashMap<ast::NodeId, vtable_res>>;
 
 
 // Information about the vtable resolutions for for a trait impl.
@@ -217,7 +218,7 @@ impl Repr for impl_res {
     }
 }
 
-pub type impl_vtable_map = RefCell<HashMap<ast::DefId, impl_res>>;
+pub type impl_vtable_map = RefCell<hashmap_ng::HashMap<ast::DefId, impl_res>>;
 
 pub struct CrateCtxt {
     // A mapping from method call sites to traits that have that method.
@@ -450,8 +451,8 @@ pub fn check_crate(tcx: ty::ctxt,
     let time_passes = tcx.sess.time_passes();
     let ccx = @CrateCtxt {
         trait_map: trait_map,
-        method_map: @RefCell::new(HashMap::new()),
-        vtable_map: @RefCell::new(HashMap::new()),
+        method_map: @RefCell::new(hashmap_ng::HashMap::new()),
+        vtable_map: @RefCell::new(hashmap_ng::HashMap::new()),
         tcx: tcx
     };
 

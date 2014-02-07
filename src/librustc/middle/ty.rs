@@ -31,7 +31,7 @@ use util::common::{indenter};
 use std::cast;
 use std::cell::{Cell, RefCell};
 use std::cmp;
-use std::hashmap::{HashMap, HashSet};
+use std::hashmap_ng::{HashMap, HashSet};
 use std::ops;
 use std::ptr::to_unsafe_ptr;
 use std::rc::Rc;

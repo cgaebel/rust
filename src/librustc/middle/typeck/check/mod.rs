@@ -115,6 +115,7 @@ use util::ppaux::{UserString, Repr};
 
 use std::cell::{Cell, RefCell};
 use std::hashmap::HashMap;
+use std::hashmap_ng;
 use std::result;
 use std::util::replace;
 use std::vec;
@@ -264,8 +265,8 @@ impl Inherited {
             node_types: RefCell::new(HashMap::new()),
             node_type_substs: RefCell::new(HashMap::new()),
             adjustments: RefCell::new(HashMap::new()),
-            method_map: @RefCell::new(HashMap::new()),
-            vtable_map: @RefCell::new(HashMap::new()),
+            method_map: @RefCell::new(hashmap_ng::HashMap::new()),
+            vtable_map: @RefCell::new(hashmap_ng::HashMap::new()),
         }
     }
 }

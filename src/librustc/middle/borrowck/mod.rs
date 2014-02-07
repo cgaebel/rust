@@ -21,6 +21,7 @@ use util::ppaux::{note_and_explain_region, Repr, UserString};
 
 use std::cell::{Cell, RefCell};
 use std::hashmap::HashMap;
+use std::hashmap_ng;
 use std::ops::{BitOr, BitAnd};
 use std::result::{Result};
 use syntax::ast;
@@ -385,10 +386,10 @@ pub struct RootInfo {
     scope: ast::NodeId,
 }
 
-pub type root_map = @RefCell<HashMap<root_map_key, RootInfo>>;
+pub type root_map = @RefCell<hashmap_ng::HashMap<root_map_key, RootInfo>>;
 
 pub fn root_map() -> root_map {
-    return @RefCell::new(HashMap::new());
+    return @RefCell::new(hashmap_ng::HashMap::new());
 }
 
 ///////////////////////////////////////////////////////////////////////////

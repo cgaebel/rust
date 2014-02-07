@@ -138,6 +138,7 @@ use util::ppaux::UserString;
 
 use std::cell::RefCell;
 use std::hashmap::{HashSet, HashMap};
+use std::hashmap_ng;
 use std::rc::Rc;
 use syntax::ast::*;
 use syntax::ast_util;
@@ -159,7 +160,7 @@ pub struct CaptureVar {
     mode: CaptureMode // How variable is being accessed
 }
 
-pub type CaptureMap = @RefCell<HashMap<NodeId, Rc<~[CaptureVar]>>>;
+pub type CaptureMap = @RefCell<hashmap_ng::HashMap<NodeId, Rc<~[CaptureVar]>>>;
 
 pub type MovesMap = @RefCell<HashSet<NodeId>>;
 
@@ -216,7 +217,7 @@ pub fn compute_moves(tcx: ty::ctxt,
         method_map: method_map,
         move_maps: MoveMaps {
             moves_map: @RefCell::new(HashSet::new()),
-            capture_map: @RefCell::new(HashMap::new()),
+            capture_map: @RefCell::new(hashmap_ng::HashMap::new()),
             moved_variables_set: @RefCell::new(HashSet::new())
         }
     };

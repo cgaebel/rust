@@ -20,7 +20,6 @@ use middle::typeck;
 use middle::privacy;
 
 use std::cell::RefCell;
-use std::hashmap::HashSet;
 use std::hashmap_ng;
 use syntax::ast;
 use syntax::ast_map;
@@ -278,7 +277,7 @@ impl ReachableContext {
     // Step 2: Mark all symbols that the symbols on the worklist touch.
     fn propagate(&self) {
         let mut visitor = self.init_visitor();
-        let mut scanned = HashSet::new();
+        let mut scanned = hashmap_ng::HashSet::new();
         loop {
             let search_item = {
                 let mut worklist = self.worklist.borrow_mut();

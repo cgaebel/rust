@@ -23,6 +23,7 @@ use syntax::visit;
 use syntax::{ast, ast_map, ast_util};
 
 use std::cell::RefCell;
+use std::hashmap_ng;
 use std::hashmap::HashMap;
 use std::rc::Rc;
 
@@ -132,10 +133,10 @@ pub fn lookup_variant_by_id(tcx: ty::ctxt,
             }
         }
         let maps = astencode::Maps {
-            root_map: @RefCell::new(HashMap::new()),
-            method_map: @RefCell::new(HashMap::new()),
-            vtable_map: @RefCell::new(HashMap::new()),
-            capture_map: @RefCell::new(HashMap::new())
+            root_map: @RefCell::new(hashmap_ng::HashMap::new()),
+            method_map: @RefCell::new(hashmap_ng::HashMap::new()),
+            vtable_map: @RefCell::new(hashmap_ng::HashMap::new()),
+            capture_map: @RefCell::new(hashmap_ng::HashMap::new())
         };
         let e = match csearch::maybe_get_item_ast(tcx, enum_def,
             |a, b, c, d| astencode::decode_inlined_item(a,
@@ -184,10 +185,10 @@ pub fn lookup_const_by_id(tcx: ty::ctxt, def_id: ast::DefId)
             }
         }
         let maps = astencode::Maps {
-            root_map: @RefCell::new(HashMap::new()),
-            method_map: @RefCell::new(HashMap::new()),
-            vtable_map: @RefCell::new(HashMap::new()),
-            capture_map: @RefCell::new(HashMap::new())
+            root_map: @RefCell::new(hashmap_ng::HashMap::new()),
+            method_map: @RefCell::new(hashmap_ng::HashMap::new()),
+            vtable_map: @RefCell::new(hashmap_ng::HashMap::new()),
+            capture_map: @RefCell::new(hashmap_ng::HashMap::new())
         };
         let e = match csearch::maybe_get_item_ast(tcx, def_id,
             |a, b, c, d| astencode::decode_inlined_item(a, b, maps, c, d)) {
