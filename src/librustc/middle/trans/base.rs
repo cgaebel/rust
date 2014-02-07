@@ -72,7 +72,7 @@ use arena::TypedArena;
 use extra::time;
 use std::c_str::ToCStr;
 use std::cell::{Cell, RefCell};
-use std::hashmap::HashMap;
+use std::hashmap_ng::HashMap;
 use std::libc::c_uint;
 use std::vec;
 use std::local_data;

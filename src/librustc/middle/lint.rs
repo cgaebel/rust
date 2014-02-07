@@ -47,7 +47,7 @@ use std::to_str::ToStr;
 use util::ppaux::{ty_to_str};
 
 use std::cmp;
-use std::hashmap::HashMap;
+use std::hashmap_ng::HashMap;
 use std::i16;
 use std::i32;
 use std::i64;

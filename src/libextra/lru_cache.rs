@@ -38,7 +38,7 @@
 //! ```
 
 use std::container::Container;
-use std::hashmap::HashMap;
+use std::hashmap_ng::HashMap;
 use std::to_bytes::Cb;
 use std::ptr;
 use std::cast;

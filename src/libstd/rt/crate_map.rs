@@ -9,7 +9,7 @@
 // except according to those terms.
 
 use container::MutableSet;
-use hashmap::HashSet;
+use hashmap_ng::HashSet;
 use iter::Iterator;
 use option::{Some, None, Option};
 use ptr::RawPtr;

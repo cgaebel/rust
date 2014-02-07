@@ -13,7 +13,7 @@
 use middle::ty;
 use middle::ty_fold;
 use middle::ty_fold::TypeFolder;
-use std::hashmap::HashMap;
+use std::hashmap_ng::HashMap;
 use util::ppaux::Repr;
 use util::ppaux;
 

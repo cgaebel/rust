@@ -69,7 +69,6 @@ use util::ppaux::Repr;
 use util::ppaux;
 
 use std::cell::RefCell;
-use std::hashmap;
 use std::hashmap_ng;
 use std::rc::Rc;
 use std::result;

@@ -15,7 +15,7 @@
 extern mod extra;
 
 use std::cell::RefCell;
-use std::hashmap::HashMap;
+use std::hashmap_ng::HashMap;
 
 pub type header_map = HashMap<~str, @RefCell<~[@~str]>>;
 

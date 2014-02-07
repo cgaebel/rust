@@ -91,7 +91,7 @@ particular region value.  Moreover, because of how the graph is built,
 we know that all concrete region nodes have either in-degree 1 or
 out-degree 1.
 
-Before resolution begins, we build up the constraints in a hashmap
+Before resolution begins, we build up the constraints in a hashmap_ng
 that maps `Constraint` keys to spans.  During resolution, we construct
 the actual `Graph` structure that we describe here.
 

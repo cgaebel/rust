@@ -137,7 +137,7 @@ use util::common::indenter;
 use util::ppaux::UserString;
 
 use std::cell::RefCell;
-use std::hashmap::{HashSet, HashMap};
+use std::hashmap_ng::{HashSet, HashMap};
 use std::hashmap_ng;
 use std::rc::Rc;
 use syntax::ast::*;

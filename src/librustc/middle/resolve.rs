@@ -30,7 +30,7 @@ use syntax::visit::Visitor;
 
 use std::cell::{Cell, RefCell};
 use std::uint;
-use std::hashmap::{HashMap, HashSet};
+use std::hashmap_ng::{HashMap, HashSet};
 use std::util;
 
 // Definition mapping

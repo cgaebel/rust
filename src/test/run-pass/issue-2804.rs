@@ -13,7 +13,7 @@
 extern mod extra;
 
 use extra::json;
-use std::hashmap::HashMap;
+use std::hashmap_ng::HashMap;
 use std::option;
 
 enum object {

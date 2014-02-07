@@ -8,7 +8,7 @@
 // option. This file may not be copied, modified, or distributed
 // except according to those terms.
 
-use std::hashmap::HashMap;
+use std::hashmap_ng::HashMap;
 
 pub fn main() {
     let mut h = HashMap::new();

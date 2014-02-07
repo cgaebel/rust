@@ -10,6 +10,6 @@
 
 #[feature(managed_boxes)];
 
-use std::hashmap::HashMap;
+use std::hashmap_ng::HashMap;
 
 pub type map = @HashMap<uint, uint>;

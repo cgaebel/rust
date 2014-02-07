@@ -19,7 +19,7 @@
 extern mod arena;
 
 use arena::Arena;
-use std::hashmap::HashMap;
+use std::hashmap_ng::HashMap;
 use std::cast;
 use std::libc;
 use std::mem;

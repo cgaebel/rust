@@ -19,7 +19,7 @@ extern mod extra;
 // These tests used to be separate files, but I wanted to refactor all
 // the common code.
 
-use std::hashmap::{HashMap, HashSet};
+use std::hashmap_ng::{HashMap, HashSet};
 
 use EBReader = extra::ebml::reader;
 use EBWriter = extra::ebml::writer;

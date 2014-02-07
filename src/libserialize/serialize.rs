@@ -14,7 +14,7 @@
 Core encoding and decoding interfaces.
 */
 
-use std::hashmap::{HashMap, HashSet};
+use std::hashmap_ng::{HashMap, HashSet};
 use std::rc::Rc;
 use std::trie::{TrieMap, TrieSet};
 use std::vec;

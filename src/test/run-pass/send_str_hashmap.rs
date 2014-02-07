@@ -16,7 +16,7 @@ use std::default::Default;
 use std::send_str::{SendStr, SendStrOwned, SendStrStatic};
 use std::str::Str;
 use std::to_str::ToStr;
-use std::hashmap::HashMap;
+use std::hashmap_ng::HashMap;
 use std::option::Some;
 
 pub fn main() {

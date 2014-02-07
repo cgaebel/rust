@@ -23,7 +23,7 @@ use clone::Clone;
 use result::{Ok, Err};
 use comm::{Port, SharedChan};
 use container::{Map, MutableMap};
-use hashmap;
+use hashmap_ng;
 use io;
 use rt::rtio::{IoFactory, LocalIo, RtioSignal};
 
@@ -78,7 +78,7 @@ pub enum Signum {
 /// ```
 pub struct Listener {
     /// A map from signums to handles to keep the handles in memory
-    priv handles: hashmap::HashMap<Signum, ~RtioSignal>,
+    priv handles: hashmap_ng::HashMap<Signum, ~RtioSignal>,
     /// chan is where all the handles send signums, which are received by
     /// the clients from port.
     priv chan: SharedChan<Signum>,
@@ -97,7 +97,7 @@ impl Listener {
         Listener {
             chan: chan,
             port: port,
-            handles: hashmap::HashMap::new(),
+            handles: hashmap_ng::HashMap::new(),
         }
     }
 

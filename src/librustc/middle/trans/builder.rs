@@ -18,7 +18,7 @@ use middle::trans::common::*;
 use middle::trans::machine::llalign_of_pref;
 use middle::trans::type_::Type;
 use std::cast;
-use std::hashmap::HashMap;
+use std::hashmap_ng::HashMap;
 use std::libc::{c_uint, c_ulonglong, c_char};
 use syntax::codemap::Span;
 use std::ptr::is_not_null;

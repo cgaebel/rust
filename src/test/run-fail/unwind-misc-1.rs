@@ -15,7 +15,7 @@
 
 fn main() {
     let _count = @0u;
-    let mut map = std::hashmap::HashMap::new();
+    let mut map = std::hashmap_ng::HashMap::new();
     let mut arr = ~[];
     for _i in range(0u, 10u) {
         arr.push(@~"key stuff");

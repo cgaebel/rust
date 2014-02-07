@@ -68,7 +68,7 @@ use middle::trans::machine::llsize_of;
 
 use middle::trans::type_::Type;
 
-use std::hashmap::HashMap;
+use std::hashmap_ng::HashMap;
 use std::vec;
 use syntax::print::pprust::{expr_to_str};
 use syntax::ast;

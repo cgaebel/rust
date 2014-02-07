@@ -114,7 +114,7 @@ use util::ppaux;
 use util::ppaux::{UserString, Repr};
 
 use std::cell::{Cell, RefCell};
-use std::hashmap::HashMap;
+use std::hashmap_ng::HashMap;
 use std::hashmap_ng;
 use std::result;
 use std::util::replace;

@@ -34,7 +34,7 @@
 //! both occur before the crate is rendered.
 
 use std::fmt;
-use std::hashmap::{HashMap, HashSet};
+use std::hashmap_ng::{HashMap, HashSet};
 use std::local_data;
 use std::io;
 use std::io::{fs, File, BufferedWriter};

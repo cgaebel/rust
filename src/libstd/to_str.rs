@@ -16,8 +16,8 @@ The `ToStr` trait for converting to strings
 
 use option::{Some, None};
 use str::OwnedStr;
-use hashmap::HashMap;
-use hashmap::HashSet;
+use hashmap_ng::HashMap;
+use hashmap_ng::HashSet;
 use hash::Hash;
 use iter::Iterator;
 use cmp::Eq;
@@ -161,8 +161,8 @@ impl<A:ToStr> ToStr for ~[A] {
 
 #[cfg(test)]
 mod tests {
-    use hashmap::HashMap;
-    use hashmap::HashSet;
+    use hashmap_ng::HashMap;
+    use hashmap_ng::HashSet;
     use container::{MutableSet, MutableMap};
     use super::*;
 
@@ -206,7 +206,7 @@ mod tests {
     }
 
     #[test]
-    fn test_hashmap() {
+    fn test_hashmap_ng() {
         let mut table: HashMap<int, StructWithToStrWithoutEqOrHash> = HashMap::new();
         let empty: HashMap<int, StructWithToStrWithoutEqOrHash> = HashMap::new();
 

@@ -14,7 +14,7 @@ extern mod extra;
 
 use extra::bitv::BitvSet;
 use extra::treemap::TreeSet;
-use std::hashmap::HashSet;
+use std::hashmap_ng::HashSet;
 use std::os;
 use std::rand;
 use std::uint;
@@ -176,7 +176,7 @@ fn main() {
             let s: HashSet<~str> = HashSet::new();
             s
         });
-        write_results("std::hashmap::HashSet", &results);
+        write_results("std::hashmap_ng::HashSet", &results);
     }
 
     {

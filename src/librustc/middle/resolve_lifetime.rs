@@ -19,7 +19,7 @@
 
 use driver::session;
 use std::cell::RefCell;
-use std::hashmap::HashMap;
+use std::hashmap_ng::HashMap;
 use syntax::ast;
 use syntax::codemap::Span;
 use syntax::opt_vec::OptVec;

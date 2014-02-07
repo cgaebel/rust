@@ -16,7 +16,7 @@ comments in the section "Moves and initialization" and in `doc.rs`.
 */
 
 use std::cell::RefCell;
-use std::hashmap::{HashMap, HashSet};
+use std::hashmap_ng::{HashMap, HashSet};
 use std::uint;
 use middle::borrowck::*;
 use middle::dataflow::DataFlowContext;

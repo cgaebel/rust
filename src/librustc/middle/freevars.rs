@@ -15,7 +15,7 @@
 use middle::resolve;
 use middle::ty;
 
-use std::hashmap::HashMap;
+use std::hashmap_ng::HashMap;
 use syntax::codemap::Span;
 use syntax::{ast, ast_util};
 use syntax::visit;

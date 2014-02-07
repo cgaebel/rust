@@ -21,7 +21,7 @@ use std::cast;
 use std::io;
 use std::uint;
 use std::vec;
-use std::hashmap::HashMap;
+use std::hashmap_ng::HashMap;
 use syntax::ast;
 use syntax::ast_util;
 use syntax::ast_util::IdRange;

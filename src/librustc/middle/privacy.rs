@@ -12,7 +12,7 @@
 //! outside their scopes. This pass will also generate a set of exported items
 //! which are available for use externally when compiled as a library.
 
-use std::hashmap::{HashSet, HashMap};
+use std::hashmap_ng::{HashSet, HashMap};
 use std::util;
 
 use metadata::csearch;

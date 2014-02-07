@@ -18,7 +18,7 @@ use middle::typeck::check::{structure_of, valid_range_bounds};
 use middle::typeck::infer;
 use middle::typeck::require_same_types;
 
-use std::hashmap::{HashMap, HashSet};
+use std::hashmap_ng::{HashMap, HashSet};
 use syntax::ast;
 use syntax::ast_util;
 use syntax::parse::token;

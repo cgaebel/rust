@@ -16,7 +16,7 @@
 //! # Example
 //!
 //! ```rust
-//! use std::hashmap::HashMap;
+//! use std::hashmap_ng::HashMap;
 //!
 //! // type inference lets us omit an explicit type signature (which
 //! // would be `HashMap<&str, &str>` in this example).
@@ -90,7 +90,7 @@ static INITIAL_CAPACITY: uint = 1 << INITIAL_LOG2_CAP; // 2^5
 static EMPTY_BUCKET: u64 = 0u64;
 static INITIAL_LOAD_FACTOR: Fraction = (9, 10);
 
-// The main performance trick in this hashmap is called Robin Hood Hashing.
+// The main performance trick in this hashmap_ng is called Robin Hood Hashing.
 // It gains its excellent performance from one key invariant:
 //
 //    If an insertion collides with an existing element, and that elements
@@ -129,7 +129,7 @@ static INITIAL_LOAD_FACTOR: Fraction = (9, 10);
 // FIXME(cgaebel): An additional optimization that I have not yet implemented
 // or explored is keeping track of the distance-to-bucket histogram as explored
 // in the original paper. I'm suspicious of it because it uses a map internally.
-// If this map were replaced with a hashmap, it could be faster, but now our
+// If this map were replaced with a hashmap_ng, it could be faster, but now our
 // data structure is self-referential and blows up. Also, this allows very good
 // first guesses, but array accesses are no longer linear and in one direction
 // in the general case.
@@ -1358,7 +1358,7 @@ pub struct HashSet<T> {
 }
 
 impl<T:Hash + Eq> Eq for HashSet<T> {
-    // I would normally delegate this to the underlying hashmap,
+    // I would normally delegate this to the underlying hashmap_ng,
     // but can't due to #11998.
     #[inline]
     fn eq(&self, other: &HashSet<T>) -> bool {
@@ -1665,7 +1665,7 @@ mod test_map {
     fn test_lots_of_insertions() {
         let mut m = HashMap::new();
 
-        // Try this a few times to make sure we never screw up the hashmap's
+        // Try this a few times to make sure we never screw up the hashmap_ng's
         // internal state.
         for _ in range(0, 10) {
             assert!(m.is_empty());
@@ -2162,7 +2162,7 @@ mod bench {
     use hashmap_legacy;
 
     #[bench]
-    fn old_hashmap_insert(b: &mut BenchHarness) {
+    fn old_hashmap_ng_insert(b: &mut BenchHarness) {
         let mut m: hashmap_legacy::HashMap<int, int> = hashmap_legacy::HashMap::new();
 
         for i in range_inclusive(1, 1000) {
@@ -2178,7 +2178,7 @@ mod bench {
     }
 
     #[bench]
-    fn new_hashmap_insert(b: &mut BenchHarness) {
+    fn new_hashmap_ng_insert(b: &mut BenchHarness) {
         use super::*;
 
         let mut m = HashMap::new();
@@ -2196,7 +2196,7 @@ mod bench {
     }
 
     #[bench]
-    fn old_hashmap_find_existing(b: &mut BenchHarness) {
+    fn old_hashmap_ng_find_existing(b: &mut BenchHarness) {
         let mut m: hashmap_legacy::HashMap<int, int> = hashmap_legacy::HashMap::new();
 
         for i in range_inclusive(1, 1000) {
@@ -2209,7 +2209,7 @@ mod bench {
     }
 
     #[bench]
-    fn new_hashmap_find_existing(b: &mut BenchHarness) {
+    fn new_hashmap_ng_find_existing(b: &mut BenchHarness) {
         use super::*;
 
         let mut m = HashMap::new();
@@ -2224,7 +2224,7 @@ mod bench {
     }
 
     #[bench]
-    fn old_hashmap_find_notexisting(b: &mut BenchHarness) {
+    fn old_hashmap_ng_find_notexisting(b: &mut BenchHarness) {
         let mut m: hashmap_legacy::HashMap<int, int> = hashmap_legacy::HashMap::new();
 
         for i in range_inclusive(1, 1000) {
@@ -2237,7 +2237,7 @@ mod bench {
     }
 
     #[bench]
-    fn new_hashmap_find_notexisting(b: &mut BenchHarness) {
+    fn new_hashmap_ng_find_notexisting(b: &mut BenchHarness) {
         use super::*;
 
         let mut m = HashMap::new();
@@ -2252,7 +2252,7 @@ mod bench {
     }
 
     #[bench]
-    fn old_hashmap_as_queue(b: &mut BenchHarness) {
+    fn old_hashmap_ng_as_queue(b: &mut BenchHarness) {
         let mut m: hashmap_legacy::HashMap<int, int> = hashmap_legacy::HashMap::new();
 
         for i in range_inclusive(1, 1000) {
@@ -2269,7 +2269,7 @@ mod bench {
     }
 
     #[bench]
-    fn new_hashmap_as_queue(b: &mut BenchHarness) {
+    fn new_hashmap_ng_as_queue(b: &mut BenchHarness) {
         use super::*;
 
         let mut m = HashMap::new();
@@ -2288,7 +2288,7 @@ mod bench {
     }
 
     #[bench]
-    fn comprehensive_old_hashmap(b: &mut BenchHarness) {
+    fn comprehensive_old_hashmap_ng(b: &mut BenchHarness) {
         let mut m: hashmap_legacy::HashMap<int, int> = hashmap_legacy::HashMap::new();
 
         for i in range_inclusive(1, 1000) {
@@ -2307,7 +2307,7 @@ mod bench {
     }
 
     #[bench]
-    fn comprehensive_new_hashmap(b: &mut BenchHarness) {
+    fn comprehensive_new_hashmap_ng(b: &mut BenchHarness) {
         use super::*;
 
         let mut m = HashMap::new();

@@ -17,7 +17,7 @@ extern mod req;
 
 use req::request;
 use std::cell::RefCell;
-use std::hashmap::HashMap;
+use std::hashmap_ng::HashMap;
 
 pub fn main() {
   let v = ~[@~"hi"];

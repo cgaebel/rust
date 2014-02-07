@@ -21,7 +21,7 @@
 pub fn map(filename: ~str, emit: map_reduce::putter) { emit(filename, ~"1"); }
 
 mod map_reduce {
-    use std::hashmap::HashMap;
+    use std::hashmap_ng::HashMap;
     use std::str;
     use std::task;
 
@@ -93,5 +93,5 @@ mod map_reduce {
 }
 
 pub fn main() {
-    map_reduce::map_reduce(~[~"../src/test/run-pass/hashmap-memory.rs"]);
+    map_reduce::map_reduce(~[~"../src/test/run-pass/hashmap_ng-memory.rs"]);
 }

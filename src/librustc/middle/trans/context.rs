@@ -29,7 +29,7 @@ use util::sha2::Sha256;
 
 use std::cell::{Cell, RefCell};
 use std::c_str::ToCStr;
-use std::hashmap::{HashMap, HashSet};
+use std::hashmap_ng::{HashMap, HashSet};
 use std::hashmap_ng;
 use std::local_data;
 use std::libc::c_uint;

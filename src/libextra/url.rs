@@ -14,7 +14,7 @@
 
 use std::io::BufReader;
 use std::cmp::Eq;
-use std::hashmap::HashMap;
+use std::hashmap_ng::HashMap;
 use std::to_bytes;
 use std::uint;
 
@@ -244,7 +244,7 @@ fn encode_plus(s: &str) -> ~str {
 }
 
 /**
- * Encode a hashmap to the 'application/x-www-form-urlencoded' media type.
+ * Encode a hashmap_ng to the 'application/x-www-form-urlencoded' media type.
  */
 pub fn encode_form_urlencoded(m: &HashMap<~str, ~[~str]>) -> ~str {
     let mut out = ~"";
@@ -270,7 +270,7 @@ pub fn encode_form_urlencoded(m: &HashMap<~str, ~[~str]>) -> ~str {
 
 /**
  * Decode a string encoded with the 'application/x-www-form-urlencoded' media
- * type into a hashmap.
+ * type into a hashmap_ng.
  */
 pub fn decode_form_urlencoded(s: &[u8]) -> HashMap<~str, ~[~str]> {
     let mut rdr = BufReader::new(s);
@@ -851,7 +851,7 @@ mod tests {
 
     use super::*;
 
-    use std::hashmap::HashMap;
+    use std::hashmap_ng::HashMap;
 
     #[test]
     fn test_url_parse() {

@@ -10,7 +10,7 @@
 
 //buggy.rs
 
-use std::hashmap::HashMap;
+use std::hashmap_ng::HashMap;
 
 fn main() {
     let mut buggy_map: HashMap<uint, &uint> = HashMap::new();

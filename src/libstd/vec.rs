@@ -3311,7 +3311,7 @@ mod tests {
 
     #[test]
     fn test_permutations() {
-        use hashmap;
+        use hashmap_ng;
         {
             let v: [int, ..0] = [];
             let mut it = v.permutations();
@@ -3335,7 +3335,7 @@ mod tests {
         }
         {
             // check that we have N! unique permutations
-            let mut set = hashmap::HashSet::new();
+            let mut set = hashmap_ng::HashSet::new();
             let v = ['A', 'B', 'C', 'D', 'E', 'F'];
             for perm in v.permutations() {
                 set.insert(perm);

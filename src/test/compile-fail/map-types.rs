@@ -11,7 +11,7 @@
 #[feature(managed_boxes)];
 
 use std::container::Map;
-use std::hashmap::HashMap;
+use std::hashmap_ng::HashMap;
 
 // Test that trait types printed in error msgs include the type arguments.
 

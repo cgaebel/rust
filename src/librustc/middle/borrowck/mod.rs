@@ -20,7 +20,7 @@ use middle::dataflow::DataFlowOperator;
 use util::ppaux::{note_and_explain_region, Repr, UserString};
 
 use std::cell::{Cell, RefCell};
-use std::hashmap::HashMap;
+use std::hashmap_ng::HashMap;
 use std::hashmap_ng;
 use std::ops::{BitOr, BitAnd};
 use std::result::{Result};

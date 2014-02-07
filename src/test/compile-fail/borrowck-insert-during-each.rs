@@ -8,7 +8,7 @@
 // option. This file may not be copied, modified, or distributed
 // except according to those terms.
 
-use std::hashmap::HashSet;
+use std::hashmap_ng::HashSet;
 
 struct Foo {
   n: HashSet<int>,

@@ -26,7 +26,7 @@ use rustc::metadata::csearch;
 use rustc::metadata::decoder;
 
 use std;
-use std::hashmap::HashMap;
+use std::hashmap_ng::HashMap;
 
 use doctree;
 use visit_ast;

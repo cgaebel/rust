@@ -17,7 +17,7 @@ use middle::privacy;
 use middle::ty;
 use middle::typeck;
 
-use std::hashmap::HashSet;
+use std::hashmap_ng::HashSet;
 use std::hashmap_ng;
 use syntax::ast;
 use syntax::ast_map;

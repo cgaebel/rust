@@ -16,7 +16,7 @@
 //! # Example
 //!
 //! ```rust
-//! use std::hashmap::HashMap;
+//! use std::hashmap_ng::HashMap;
 //!
 //! // type inference lets us omit an explicit type signature (which
 //! // would be `HashMap<&str, &str>` in this example).
@@ -394,7 +394,7 @@ impl<K: Hash + Eq, V> HashMap<K, V> {
     /// Modify and return the value corresponding to the key in the map, or
     /// insert and return a new value if it doesn't exist.
     ///
-    /// This method allows for all insertion behaviours of a hashmap,
+    /// This method allows for all insertion behaviours of a hashmap_ng,
     /// see methods like `insert`, `find_or_insert` and
     /// `insert_or_update_with` for less general and more friendly
     /// variations of this.
@@ -402,7 +402,7 @@ impl<K: Hash + Eq, V> HashMap<K, V> {
     /// # Example
     ///
     /// ```rust
-    /// use std::hashmap::HashMap;
+    /// use std::hashmap_ng::HashMap;
     ///
     /// // map some strings to vectors of strings
     /// let mut map = HashMap::<~str, ~[~str]>::new();

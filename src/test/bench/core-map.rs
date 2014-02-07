@@ -12,7 +12,7 @@ extern mod extra;
 
 use extra::time;
 use extra::treemap::TreeMap;
-use std::hashmap::{HashMap, HashSet};
+use std::hashmap_ng::{HashMap, HashSet};
 use std::os;
 use std::rand::{Rng, IsaacRng, SeedableRng};
 use std::trie::TrieMap;

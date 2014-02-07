@@ -25,7 +25,7 @@ use util::common::indenter;
 use util::ppaux::{Repr};
 
 use std::cell::{Cell, RefCell};
-use std::hashmap::{HashMap, HashSet};
+use std::hashmap_ng::{HashMap, HashSet};
 use std::uint;
 use std::vec;
 use syntax::ast;

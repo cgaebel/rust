@@ -22,7 +22,7 @@ use syntax;
 use std::cell::RefCell;
 use std::os;
 use std::local_data;
-use std::hashmap::{HashSet};
+use std::hashmap_ng::{HashSet};
 
 use visit_ast::RustdocVisitor;
 use clean;

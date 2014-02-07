@@ -46,7 +46,7 @@ use syntax::opt_vec;
 use syntax::visit;
 
 use std::cell::RefCell;
-use std::hashmap::HashSet;
+use std::hashmap_ng::HashSet;
 use std::rc::Rc;
 use std::vec;
 

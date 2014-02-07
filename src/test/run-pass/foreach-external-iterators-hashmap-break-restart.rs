@@ -8,7 +8,7 @@
 // option. This file may not be copied, modified, or distributed
 // except according to those terms.
 
-use std::hashmap::HashMap;
+use std::hashmap_ng::HashMap;
 
 // This is a fancy one: it uses an external iterator established
 // outside the loop, breaks, then _picks back up_ and continues

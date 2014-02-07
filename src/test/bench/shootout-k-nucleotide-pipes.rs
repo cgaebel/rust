@@ -17,7 +17,7 @@ extern mod extra;
 
 use std::cmp::Ord;
 use std::comm;
-use std::hashmap::HashMap;
+use std::hashmap_ng::HashMap;
 use std::option;
 use std::os;
 use std::io;

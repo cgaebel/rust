@@ -35,7 +35,7 @@ use std::c_str::ToCStr;
 use std::cast::transmute;
 use std::cast;
 use std::cell::{Cell, RefCell};
-use std::hashmap::HashMap;
+use std::hashmap_ng::HashMap;
 use std::libc::{c_uint, c_longlong, c_ulonglong, c_char};
 use syntax::ast::{Ident};
 use syntax::ast_map::{Path, PathElem, PathPrettyName};

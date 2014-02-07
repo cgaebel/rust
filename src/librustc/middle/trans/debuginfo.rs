@@ -142,8 +142,8 @@ use util::ppaux;
 
 use std::c_str::{CString, ToCStr};
 use std::cell::{Cell, RefCell};
-use std::hashmap::HashMap;
-use std::hashmap::HashSet;
+use std::hashmap_ng::HashMap;
+use std::hashmap_ng::HashSet;
 use std::libc::{c_uint, c_ulonglong, c_longlong};
 use std::ptr;
 use std::sync::atomics;
