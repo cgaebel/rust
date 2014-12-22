@@ -5239,9 +5239,9 @@ pub fn lookup_field_type<'tcx>(tcx: &ctxt<'tcx>,
         node_id_to_type(tcx, id.node)
     } else {
         let mut tcache = tcx.tcache.borrow_mut();
-        let pty = match tcache.entry(id) {
+        let pty = match tcache.entry(&id) {
             Occupied(entry) => entry.into_mut(),
-            Vacant(entry) => entry.set(csearch::get_field_type(tcx, struct_id, id)),
+            Vacant(entry) => entry.insert(csearch::get_field_type(tcx, struct_id, id)),
         };
         pty.ty
     };
@@ -6338,8 +6338,8 @@ pub fn replace_late_bound_regions<'tcx, T, F>(
         debug!("region={}", region.repr(tcx));
         match region {
             ty::ReLateBound(debruijn, br) if debruijn.depth == current_depth => {
-                * match map.entry(br) {
-                    Vacant(entry) => entry.set(mapf(br, debruijn)),
+                * match map.entry(&br) {
+                    Vacant(entry) => entry.insert(mapf(br, debruijn)),
                     Occupied(entry) => entry.into_mut(),
                 }
             }

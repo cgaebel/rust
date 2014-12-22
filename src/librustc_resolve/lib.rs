@@ -2881,11 +2881,11 @@ impl<'a> Resolver<'a> {
         let is_public = import_directive.is_public;
 
         let mut import_resolutions = module_.import_resolutions.borrow_mut();
-        let dest_import_resolution = match import_resolutions.entry(name) {
+        let dest_import_resolution = match import_resolutions.entry(&name) {
             Occupied(entry) => entry.into_mut(),
             Vacant(entry) => {
                 // Create a new import resolution from this child.
-                entry.set(ImportResolution::new(id, is_public))
+                entry.insert(ImportResolution::new(id, is_public))
             }
         };
 
@@ -3797,16 +3797,16 @@ impl<'a> Resolver<'a> {
                             def = DefUpvar(node_id, function_id, last_proc_body_id);
 
                             let mut seen = self.freevars_seen.borrow_mut();
-                            let seen = match seen.entry(function_id) {
+                            let seen = match seen.entry(&function_id) {
                                 Occupied(v) => v.into_mut(),
-                                Vacant(v) => v.set(NodeSet::new()),
+                                Vacant(v) => v.insert(NodeSet::new()),
                             };
                             if seen.contains(&node_id) {
                                 continue;
                             }
-                            match self.freevars.borrow_mut().entry(function_id) {
+                            match self.freevars.borrow_mut().entry(&function_id) {
                                 Occupied(v) => v.into_mut(),
-                                Vacant(v) => v.set(vec![]),
+                                Vacant(v) => v.insert(vec![]),
                             }.push(Freevar { def: prev_def, span: span });
                             seen.insert(node_id);
                         }
@@ -5882,7 +5882,7 @@ impl<'a> Resolver<'a> {
                 "Import should only be used for `use` directives");
         self.last_private.insert(node_id, lp);
 
-        match self.def_map.borrow_mut().entry(node_id) {
+        match self.def_map.borrow_mut().entry(&node_id) {
             // Resolve appears to "resolve" the same ID multiple
             // times, so here is a sanity check it at least comes to
             // the same conclusion! - nmatsakis
@@ -5894,7 +5894,7 @@ impl<'a> Resolver<'a> {
                                  *entry.get(),
                                  def).as_slice());
             },
-            Vacant(entry) => { entry.set(def); },
+            Vacant(entry) => { entry.insert(def); },
         }
     }
 

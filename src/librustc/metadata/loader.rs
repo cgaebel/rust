@@ -400,9 +400,9 @@ impl<'a> Context<'a> {
             };
             info!("lib candidate: {}", path.display());
 
-            let slot = match candidates.entry(hash.to_string()) {
+            let slot = match candidates.entry(&hash.to_string()) {
                 Occupied(entry) => entry.into_mut(),
-                Vacant(entry) => entry.set((HashSet::new(), HashSet::new())),
+                Vacant(entry) => entry.insert((HashSet::new(), HashSet::new())),
             };
             let (ref mut rlibs, ref mut dylibs) = *slot;
             if rlib {

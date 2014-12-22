@@ -1648,8 +1648,8 @@ fn link_reborrowed_region<'a, 'tcx>(rcx: &Rcx<'a, 'tcx>,
                     borrow_cmt: ref_cmt
                 };
 
-                match rcx.maybe_links.borrow_mut().entry(upvar_id) {
-                    Vacant(entry) => { entry.set(vec![link]); }
+                match rcx.maybe_links.borrow_mut().entry(&upvar_id) {
+                    Vacant(entry) => { entry.insert(vec![link]); }
                     Occupied(entry) => { entry.into_mut().push(link); }
                 }
             }
@@ -1817,10 +1817,10 @@ fn adjust_upvar_borrow_kind(rcx: &Rcx,
 
             // Check if there are any region links we now need to
             // establish due to adjusting the borrow kind of the upvar
-            match rcx.maybe_links.borrow_mut().entry(upvar_id) {
+            match rcx.maybe_links.borrow_mut().entry(&upvar_id) {
                 Occupied(entry) => {
                     for MaybeLink { span, borrow_region,
-                                    borrow_kind, borrow_cmt } in entry.take().into_iter()
+                                    borrow_kind, borrow_cmt } in entry.remove().into_iter()
                     {
                         link_region(rcx, span, borrow_region, borrow_kind, borrow_cmt);
                     }
