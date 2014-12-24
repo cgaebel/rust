@@ -946,7 +946,7 @@ impl<K: Eq + Hash<S>, V, S, H: Hasher<S>> HashMap<K, V, H> {
 
     /// Gets the given key's corresponding entry in the map for in-place manipulation.
     /// Regardless of whether or not `to_owned()` has been called, the key must hash the same way.
-    pub fn entry<'a, Sized? O: Eq + Hash<S> + ToOwned<K>>(&'a mut self, key: &O) -> Entry<'a, K, V> {
+    pub fn entry<'a, Sized? Q: Eq + Hash<S> + ToOwned<K>>(&'a mut self, key: &'a Q) -> Entry<'a, Q, K, V> {
         // Gotta resize now.
         self.reserve(1);
 
@@ -1186,8 +1186,8 @@ impl<K: Eq + Hash<S>, V, S, H: Hasher<S>> HashMap<K, V, H> {
     }
 }
 
-fn search_entry_hashed<'a, K, V, Sized? O: Eq + ToOwned<K>>(table: &'a mut RawTable<K,V>, hash: SafeHash, k: &O)
-        -> Entry<'a, K, V> {
+fn search_entry_hashed<'a, K, V, Sized? Q: Eq + ToOwned<K>>(table: &'a mut RawTable<K,V>, hash: SafeHash, k: &'a Q)
+        -> Entry<'a, Q, K, V> {
     // Worst case, we'll find one empty bucket among `size + 1` buckets.
     let size = table.size();
     let mut probe = Bucket::new(table, hash);
@@ -1199,7 +1199,7 @@ fn search_entry_hashed<'a, K, V, Sized? O: Eq + ToOwned<K>>(table: &'a mut RawTa
                 // Found a hole!
                 return Vacant(VacantEntry {
                     hash: hash,
-                    key: k.to_owned(),
+                    key: k,
                     elem: NoElem(bucket),
                 });
             },
@@ -1222,7 +1222,7 @@ fn search_entry_hashed<'a, K, V, Sized? O: Eq + ToOwned<K>>(table: &'a mut RawTa
             // Found a luckier bucket than me. Better steal his spot.
             return Vacant(VacantEntry {
                 hash: hash,
-                key: k.to_owned(),
+                key: k,
                 elem: NeqElem(bucket, robin_ib as uint),
             });
         }
@@ -1347,18 +1347,18 @@ pub struct OccupiedEntry<'a, K:'a, V:'a> {
 }
 
 /// A view into a single empty location in a HashMap
-pub struct VacantEntry<'a, K:'a, V:'a> {
+pub struct VacantEntry<'a, Sized? Q:'a, K:'a, V:'a> {
     hash: SafeHash,
-    key: K,
-    elem: VacantEntryState<K,V, &'a mut RawTable<K, V>>,
+    key: &'a Q,
+    elem: VacantEntryState<K, V, &'a mut RawTable<K, V>>,
 }
 
 /// A view into a single location in a map, which may be vacant or occupied
-pub enum Entry<'a, O:'a, V:'a> {
+pub enum Entry<'a, Sized? Q:'a, K:'a, V:'a> {
     /// An occupied Entry
-    Occupied(OccupiedEntry<'a, O, V>),
+    Occupied(OccupiedEntry<'a, K, V>),
     /// A vacant Entry
-    Vacant(VacantEntry<'a, O, V>),
+    Vacant(VacantEntry<'a, Q, K, V>),
 }
 
 /// Possible states of a VacantEntry
@@ -1406,11 +1406,11 @@ impl<'a, K: 'a, V: 'a> Iterator<(K, V)> for Drain<'a, K, V> {
     }
 }
 
-impl<'a, K, V> Entry<'a, K, V> {
+impl<'a, Q, K, V> Entry<'a, Q, K, V> {
     /// Returns a mutable reference to the entry if occupied, or the VacantEntry if vacant
-    pub fn get(self) -> Result<&'a mut V, VacantEntry<'a, K, V>> {
+    pub fn get(self) -> Result<&'a mut V, VacantEntry<'a, Q, K, V>> {
         match self {
-            Occupied(entry) => Ok(entry.elem.into_mut_refs().1),
+            Occupied(entry) => Ok(entry.into_mut()),
             Vacant(entry) => Err(entry),
         }
     }
@@ -1446,16 +1446,16 @@ impl<'a, K, V> OccupiedEntry<'a, K, V> {
     }
 }
 
-impl<'a, K, V> VacantEntry<'a, K, V> {
+impl<'a, Q: ToOwned<K>, K, V> VacantEntry<'a, Q, K, V> {
     /// Sets the value of the entry with the VacantEntry's key,
     /// and returns a mutable reference to it
     pub fn insert(self, value: V) -> &'a mut V {
         match self.elem {
             NeqElem(bucket, ib) => {
-                robin_hood(bucket, ib, self.hash, self.key, value)
+                robin_hood(bucket, ib, self.hash, self.key.to_owned(), value)
             }
             NoElem(bucket) => {
-                bucket.put(self.hash, self.key, value).into_mut_refs().1
+                bucket.put(self.hash, self.key.to_owned(), value).into_mut_refs().1
             }
         }
     }
@@ -2176,7 +2176,7 @@ mod test_map {
       
       match map.entry("a") {
         Vacant(_) => unreachable!(),
-        Occupied(mut entry) => {
+        Occupied(entry) => {
           entry.insert(20);
         },
       }

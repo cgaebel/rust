@@ -1263,7 +1263,8 @@ impl Context {
                 None => continue,
                 Some(ref s) => s.to_string(),
             };
-            let v = match map.entry(&short.to_string()) {
+            let short = short.to_string();
+            let v = match map.entry(&short) {
                 Vacant(entry) => entry.insert(Vec::with_capacity(1)),
                 Occupied(entry) => entry.into_mut(),
             };

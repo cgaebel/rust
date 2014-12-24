@@ -312,7 +312,8 @@ fn parse_externs(matches: &getopts::Matches) -> Result<core::Externs, String> {
                 return Err("--extern value must be of the format `foo=bar`".to_string());
             }
         };
-        let locs = match externs.entry(&name.to_string()) {
+        let name = name.to_string();
+        let locs = match externs.entry(&name) {
             Vacant(entry) => entry.insert(Vec::with_capacity(1)),
             Occupied(entry) => entry.into_mut(),
         };

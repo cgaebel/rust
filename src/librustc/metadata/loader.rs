@@ -400,7 +400,8 @@ impl<'a> Context<'a> {
             };
             info!("lib candidate: {}", path.display());
 
-            let slot = match candidates.entry(&hash.to_string()) {
+            let hash_str = hash.to_string();
+            let slot = match candidates.entry(&hash_str) {
                 Occupied(entry) => entry.into_mut(),
                 Vacant(entry) => entry.insert((HashSet::new(), HashSet::new())),
             };
