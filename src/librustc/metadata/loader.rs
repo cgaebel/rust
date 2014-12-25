@@ -228,7 +228,6 @@ use util::fs;
 
 use std::c_str::ToCStr;
 use std::cmp;
-use std::collections::hash_map::Entry::{Occupied, Vacant};
 use std::collections::{HashMap, HashSet};
 use std::io::fs::PathExtensions;
 use std::io;
@@ -401,10 +400,8 @@ impl<'a> Context<'a> {
             info!("lib candidate: {}", path.display());
 
             let hash_str = hash.to_string();
-            let slot = match candidates.entry(&hash_str) {
-                Occupied(entry) => entry.into_mut(),
-                Vacant(entry) => entry.insert((HashSet::new(), HashSet::new())),
-            };
+            let slot = candidates.entry(&hash_str).get()
+                .unwrap_or_else(|vacant_entry| vacant_entry.insert((HashSet::new(), HashSet::new())));
             let (ref mut rlibs, ref mut dylibs) = *slot;
             if rlib {
                 rlibs.insert(fs::realpath(path).unwrap());

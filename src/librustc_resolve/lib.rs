@@ -2881,13 +2881,11 @@ impl<'a> Resolver<'a> {
         let is_public = import_directive.is_public;
 
         let mut import_resolutions = module_.import_resolutions.borrow_mut();
-        let dest_import_resolution = match import_resolutions.entry(&name) {
-            Occupied(entry) => entry.into_mut(),
-            Vacant(entry) => {
+        let dest_import_resolution = import_resolutions.entry(&name).get()
+            .unwrap_or_else(|vacant_entry| {
                 // Create a new import resolution from this child.
-                entry.insert(ImportResolution::new(id, is_public))
-            }
-        };
+                vacant_entry.insert(ImportResolution::new(id, is_public))
+            });
 
         debug!("(resolving glob import) writing resolution `{}` in `{}` \
                to `{}`",

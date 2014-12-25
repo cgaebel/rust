@@ -78,7 +78,6 @@ use std::ops;
 use std::rc::Rc;
 use collections::enum_set::{EnumSet, CLike};
 use std::collections::hash_map::HashMap;
-use std::collections::hash_map::Entry::{Occupied, Vacant};
 use syntax::abi;
 use syntax::ast::{CrateNum, DefId, DUMMY_NODE_ID, Ident, ItemTrait, LOCAL_CRATE};
 use syntax::ast::{MutImmutable, MutMutable, Name, NamedField, NodeId};
@@ -5239,10 +5238,8 @@ pub fn lookup_field_type<'tcx>(tcx: &ctxt<'tcx>,
         node_id_to_type(tcx, id.node)
     } else {
         let mut tcache = tcx.tcache.borrow_mut();
-        let pty = match tcache.entry(&id) {
-            Occupied(entry) => entry.into_mut(),
-            Vacant(entry) => entry.insert(csearch::get_field_type(tcx, struct_id, id)),
-        };
+        let pty = tcache.entry(&id).get()
+            .unwrap_or_else(|vacant_entry| vacant_entry.insert(csearch::get_field_type(tcx, struct_id, id)));
         pty.ty
     };
     ty.subst(tcx, substs)
@@ -6338,10 +6335,8 @@ pub fn replace_late_bound_regions<'tcx, T, F>(
         debug!("region={}", region.repr(tcx));
         match region {
             ty::ReLateBound(debruijn, br) if debruijn.depth == current_depth => {
-                * match map.entry(&br) {
-                    Vacant(entry) => entry.insert(mapf(br, debruijn)),
-                    Occupied(entry) => entry.into_mut(),
-                }
+                * map.entry(&br).get()
+                    .unwrap_or_else(|vacant_entry| vacant_entry.insert(mapf(br, debruijn)))
             }
             _ => {
                 region

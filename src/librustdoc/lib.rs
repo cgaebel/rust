@@ -34,7 +34,6 @@ extern crate "test" as testing;
 
 use std::cell::RefCell;
 use std::collections::HashMap;
-use std::collections::hash_map::Entry::{Occupied, Vacant};
 use std::io::File;
 use std::io;
 use std::rc::Rc;
@@ -313,10 +312,8 @@ fn parse_externs(matches: &getopts::Matches) -> Result<core::Externs, String> {
             }
         };
         let name = name.to_string();
-        let locs = match externs.entry(&name) {
-            Vacant(entry) => entry.insert(Vec::with_capacity(1)),
-            Occupied(entry) => entry.into_mut(),
-        };
+        let locs = externs.entry(&name).get()
+            .unwrap_or_else(|vacant_entry| vacant_entry.insert(Vec::with_capacity(1)));
         locs.push(location.to_string());
     }
     Ok(externs)
