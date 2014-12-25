@@ -24,7 +24,7 @@ use super::node::{mod, Node, Found, GoDown};
 use super::node::{Traversal, MutTraversal, MoveTraversal};
 use super::node::TraversalItem::{mod, Elem, Edge};
 use super::node::ForceResult::{Leaf, Internal};
-use core::borrow::BorrowFrom;
+use core::borrow::{BorrowFrom, ToOwned};
 use std::hash::{Writer, Hash};
 use core::default::Default;
 use core::{iter, fmt, mem};
@@ -121,16 +121,16 @@ pub struct Values<'a, K: 'a, V: 'a> {
 }
 
 /// A view into a single entry in a map, which may either be vacant or occupied.
-pub enum Entry<'a, K:'a, V:'a> {
+pub enum Entry<'a, Sized? Q:'a, K:'a, V:'a> {
     /// A vacant Entry
-    Vacant(VacantEntry<'a, K, V>),
+    Vacant(VacantEntry<'a, Q, K, V>),
     /// An occupied Entry
     Occupied(OccupiedEntry<'a, K, V>),
 }
 
 /// A vacant Entry.
-pub struct VacantEntry<'a, K:'a, V:'a> {
-    key: K,
+pub struct VacantEntry<'a, Sized? Q:'a, K:'a, V:'a> {
+    key: &'a Q,
     stack: stack::SearchStack<'a, K, V, node::handle::Edge, node::handle::Leaf>,
 }
 
@@ -1082,11 +1082,11 @@ impl<'a, K, V> DoubleEndedIterator<&'a V> for Values<'a, K, V> {
 impl<'a, K, V> ExactSizeIterator<&'a V> for Values<'a, K, V> {}
 
 
-impl<'a, K: Ord, V> VacantEntry<'a, K, V> {
+impl<'a, Q: ToOwned<K>, K: Ord, V> VacantEntry<'a, Q, K, V> {
     /// Sets the value of the entry with the VacantEntry's key,
     /// and returns a mutable reference to it.
     pub fn set(self, value: V) -> &'a mut V {
-        self.stack.insert(self.key, value)
+        self.stack.insert(self.key.to_owned(), value)
     }
 }
 
@@ -1288,12 +1288,15 @@ impl<K, V> BTreeMap<K, V> {
 
 impl<K: Ord, V> BTreeMap<K, V> {
     /// Gets the given key's corresponding entry in the map for in-place manipulation.
-    pub fn entry<'a>(&'a mut self, mut key: K) -> Entry<'a, K, V> {
+    /// The key must have the same ordering before or after `.to_owned()` is called.
+    pub fn entry<'a, Sized? Q>(&'a mut self, mut key: &'a Q) -> Entry<'a, Q, K, V>
+        where Q: Ord + ToOwned<K>
+    {
         // same basic logic of `swap` and `pop`, blended together
         let mut stack = stack::PartialSearchStack::new(self);
         loop {
             let result = stack.with(move |pusher, node| {
-                return match Node::search(node, &key) {
+                return match Node::search(node, key) {
                     Found(handle) => {
                         // Perfect match
                         Finished(Occupied(OccupiedEntry {
@@ -1527,6 +1530,46 @@ mod test {
         }
         assert_eq!(map.get(&10).unwrap(), &1000);
         assert_eq!(map.len(), 6);
+    }
+
+    struct UnownedInt(int);
+
+    impl ToOwned<int> for UnownedInt {
+      fn to_owned(&self) -> int {
+        let UnownedInt(i) = *self;
+        i
+      }
+    }
+
+    #[test]
+    fn test_entry_to_owned() {
+      let xs = [(String::from_str("abc"), 1), (String::from_str("a"), 2)];
+      let mut map: HashMap<String, int> = xs.iter().map(|x| x.clone()).collect();
+
+      match map.entry("a") {
+        Vacant(_) => unreachable!(),
+        Occupied(entry) => {
+          entry.insert(20);
+        },
+      }
+
+      assert_eq!(map.get("a").unwrap(), &20);
+
+      match map.entry("b") {
+        Vacant(entry) => {
+          entry.insert(30);
+        },
+        Occupied(_) => unreachable!(),
+      }
+
+      assert_eq!(map.get("b").unwrap(), &30);
+
+      match map.entry("abc") {
+        Vacant(_) => unreachable!(),
+        Occupied(entry) => {
+          assert_eq!(entry.get(), &1);
+        },
+      }
     }
 }
 

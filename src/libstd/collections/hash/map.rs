@@ -946,7 +946,9 @@ impl<K: Eq + Hash<S>, V, S, H: Hasher<S>> HashMap<K, V, H> {
 
     /// Gets the given key's corresponding entry in the map for in-place manipulation.
     /// Regardless of whether or not `to_owned()` has been called, the key must hash the same way.
-    pub fn entry<'a, Sized? Q: Eq + Hash<S> + ToOwned<K>>(&'a mut self, key: &'a Q) -> Entry<'a, Q, K, V> {
+    pub fn entry<'a, Sized? Q>(&'a mut self, key: &'a Q) -> Entry<'a, Q, K, V>
+        where Q: Eq + Hash<S> + ToOwned<K>
+    {
         // Gotta resize now.
         self.reserve(1);
 
@@ -1186,8 +1188,10 @@ impl<K: Eq + Hash<S>, V, S, H: Hasher<S>> HashMap<K, V, H> {
     }
 }
 
-fn search_entry_hashed<'a, K, V, Sized? Q: Eq + ToOwned<K>>(table: &'a mut RawTable<K,V>, hash: SafeHash, k: &'a Q)
-        -> Entry<'a, Q, K, V> {
+fn search_entry_hashed<'a, K, V, Sized? Q>(table: &'a mut RawTable<K,V>, hash: SafeHash, k: &'a Q)
+        -> Entry<'a, Q, K, V>
+    where Q: Eq + ToOwned<K>
+{
     // Worst case, we'll find one empty bucket among `size + 1` buckets.
     let size = table.size();
     let mut probe = Bucket::new(table, hash);
@@ -2173,7 +2177,7 @@ mod test_map {
     fn test_entry_to_owned() {
       let xs = [(String::from_str("abc"), 1), (String::from_str("a"), 2)];
       let mut map: HashMap<String, int> = xs.iter().map(|x| x.clone()).collect();
-      
+
       match map.entry("a") {
         Vacant(_) => unreachable!(),
         Occupied(entry) => {
