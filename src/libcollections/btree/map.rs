@@ -1349,7 +1349,6 @@ impl<K: Ord, V> BTreeMap<K, V> {
 mod test {
     use prelude::*;
     use std::borrow::{ToOwned, BorrowFrom};
-    use std::collections::HashMap;
 
     use super::{BTreeMap, Occupied, Vacant};
 
@@ -1503,7 +1502,7 @@ mod test {
             Vacant(_) => unreachable!(),
             Occupied(mut view) => {
                 assert_eq!(view.get(), &10);
-                assert_eq!(view.set(100), 10);
+                assert_eq!(view.insert(100), 10);
             }
         }
         assert_eq!(map.get(&1).unwrap(), &100);
@@ -1525,7 +1524,7 @@ mod test {
         match map.entry(&3) {
             Vacant(_) => unreachable!(),
             Occupied(view) => {
-                assert_eq!(view.take(), 30);
+                assert_eq!(view.remove(), 30);
             }
         }
         assert_eq!(map.get(&3), None);
@@ -1536,7 +1535,7 @@ mod test {
         match map.entry(&10) {
             Occupied(_) => unreachable!(),
             Vacant(view) => {
-                assert_eq!(*view.set(1000), 1000);
+                assert_eq!(*view.insert(1000), 1000);
             }
         }
         assert_eq!(map.get(&10).unwrap(), &1000);
