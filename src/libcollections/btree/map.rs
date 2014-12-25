@@ -1339,6 +1339,8 @@ impl<K: Ord, V> BTreeMap<K, V> {
 #[cfg(test)]
 mod test {
     use prelude::*;
+    use std::borrow::{ToOwned, BorrowFrom};
+    use std::collections::HashMap;
 
     use super::{BTreeMap, Occupied, Vacant};
 
@@ -1488,7 +1490,7 @@ mod test {
         let mut map: BTreeMap<int, int> = xs.iter().map(|&x| x).collect();
 
         // Existing key (insert)
-        match map.entry(1) {
+        match map.entry(&1) {
             Vacant(_) => unreachable!(),
             Occupied(mut view) => {
                 assert_eq!(view.get(), &10);
@@ -1500,7 +1502,7 @@ mod test {
 
 
         // Existing key (update)
-        match map.entry(2) {
+        match map.entry(&2) {
             Vacant(_) => unreachable!(),
             Occupied(mut view) => {
                 let v = view.get_mut();
@@ -1511,7 +1513,7 @@ mod test {
         assert_eq!(map.len(), 6);
 
         // Existing key (take)
-        match map.entry(3) {
+        match map.entry(&3) {
             Vacant(_) => unreachable!(),
             Occupied(view) => {
                 assert_eq!(view.take(), 30);
@@ -1522,7 +1524,7 @@ mod test {
 
 
         // Inexistent key (insert)
-        match map.entry(10) {
+        match map.entry(&10) {
             Occupied(_) => unreachable!(),
             Vacant(view) => {
                 assert_eq!(*view.set(1000), 1000);
@@ -1541,10 +1543,16 @@ mod test {
       }
     }
 
+    impl BorrowFrom<int> for UnownedInt {
+        fn borrow_from(k: &int) -> &UnownedInt {
+            unsafe { ::std::mem::transmute(k) }
+        }
+    }
+
     #[test]
     fn test_entry_to_owned() {
       let xs = [(String::from_str("abc"), 1), (String::from_str("a"), 2)];
-      let mut map: HashMap<String, int> = xs.iter().map(|x| x.clone()).collect();
+      let mut map: BTreeMap<String, int> = xs.iter().map(|x| x.clone()).collect();
 
       match map.entry("a") {
         Vacant(_) => unreachable!(),

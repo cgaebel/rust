@@ -1486,7 +1486,7 @@ impl<K: Eq + Hash<S>, V, S, H: Hasher<S> + Default> Extend<(K, V)> for HashMap<K
 mod test_map {
     use prelude::*;
 
-    use super::HashMap;
+    use super::{HashMap, VacantEntry, OccupiedEntry};
     use super::Entry::{Occupied, Vacant};
     use hash;
     use iter::{range_inclusive, range_step_inclusive};
