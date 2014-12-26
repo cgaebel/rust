@@ -1346,19 +1346,19 @@ pub struct Drain<'a, K: 'a, V: 'a> {
 }
 
 /// A view into a single occupied location in a HashMap
-pub struct OccupiedEntry<'a, K:'a, V:'a> {
+pub struct OccupiedEntry<'a, K: 'a, V: 'a> {
     elem: FullBucket<K, V, &'a mut RawTable<K, V>>,
 }
 
 /// A view into a single empty location in a HashMap
-pub struct VacantEntry<'a, Sized? Q:'a, K:'a, V:'a> {
+pub struct VacantEntry<'a, Sized? Q: 'a, K: 'a, V: 'a> {
     hash: SafeHash,
     key: &'a Q,
     elem: VacantEntryState<K, V, &'a mut RawTable<K, V>>,
 }
 
 /// A view into a single location in a map, which may be vacant or occupied
-pub enum Entry<'a, Sized? Q:'a, K:'a, V:'a> {
+pub enum Entry<'a, Sized? Q: 'a, K: 'a, V: 'a> {
     /// An occupied Entry
     Occupied(OccupiedEntry<'a, K, V>),
     /// A vacant Entry
@@ -1410,7 +1410,7 @@ impl<'a, K: 'a, V: 'a> Iterator<(K, V)> for Drain<'a, K, V> {
     }
 }
 
-impl<'a, Q, K, V> Entry<'a, Q, K, V> {
+impl<'a, Sized? Q, K, V> Entry<'a, Q, K, V> {
     /// Returns a mutable reference to the entry if occupied, or the VacantEntry if vacant
     pub fn get(self) -> Result<&'a mut V, VacantEntry<'a, Q, K, V>> {
         match self {
@@ -1450,7 +1450,7 @@ impl<'a, K, V> OccupiedEntry<'a, K, V> {
     }
 }
 
-impl<'a, Q: ToOwned<K>, K, V> VacantEntry<'a, Q, K, V> {
+impl<'a, Sized? Q: 'a + ToOwned<K>, K: 'a, V: 'a> VacantEntry<'a, Q, K, V> {
     /// Sets the value of the entry with the VacantEntry's key,
     /// and returns a mutable reference to it
     pub fn insert(self, value: V) -> &'a mut V {
@@ -1488,6 +1488,7 @@ mod test_map {
 
     use super::{HashMap, VacantEntry, OccupiedEntry};
     use super::Entry::{Occupied, Vacant};
+    use borrow::ToOwned;
     use hash;
     use iter::{range_inclusive, range_step_inclusive};
     use cell::RefCell;
@@ -2180,7 +2181,7 @@ mod test_map {
 
       match map.entry("a") {
         Vacant(_) => unreachable!(),
-        Occupied(entry) => {
+        Occupied(mut entry) => {
           entry.insert(20);
         },
       }

@@ -1081,7 +1081,7 @@ impl<'a, K, V> DoubleEndedIterator<&'a V> for Values<'a, K, V> {
 }
 impl<'a, K, V> ExactSizeIterator<&'a V> for Values<'a, K, V> {}
 
-impl<'a, Q, K: Ord, V> Entry<'a, Q, K, V> {
+impl<'a, Sized? Q, K: Ord, V> Entry<'a, Q, K, V> {
     /// Returns a mutable reference to the entry if occupied, or the VacantEntry if vacant
     pub fn get(self) -> Result<&'a mut V, VacantEntry<'a, Q, K, V>> {
         match self {
@@ -1091,7 +1091,7 @@ impl<'a, Q, K: Ord, V> Entry<'a, Q, K, V> {
     }
 }
 
-impl<'a, Q: ToOwned<K>, K: Ord, V> VacantEntry<'a, Q, K, V> {
+impl<'a, Sized? Q: ToOwned<K>, K: Ord, V> VacantEntry<'a, Q, K, V> {
     /// Sets the value of the entry with the VacantEntry's key,
     /// and returns a mutable reference to it.
     pub fn insert(self, value: V) -> &'a mut V {
@@ -1117,7 +1117,7 @@ impl<'a, K: Ord, V> OccupiedEntry<'a, K, V> {
 
     /// Sets the value of the entry with the OccupiedEntry's key,
     /// and returns the entry's old value.
-    pub fn insert(&mut self, mut value: V) -> V {
+    pub fn insert(mut self, mut value: V) -> V {
         mem::swap(self.stack.peek_mut(), &mut value);
         value
     }
@@ -1350,7 +1350,7 @@ mod test {
     use prelude::*;
     use std::borrow::{ToOwned, BorrowFrom};
 
-    use super::{BTreeMap, Occupied, Vacant};
+    use super::{BTreeMap, Occupied, Vacant, VacantEntry};
 
     #[test]
     fn test_basic_large() {
